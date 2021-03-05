@@ -8,7 +8,9 @@
     "prepare": "husky install"
   },
   "devDependencies": {
+    "@types/lodash.defaultsdeep": "^4.6.6",
     "@types/node": "^14.14.31",
+    "@types/three": "^0.126.0",
     "@typescript-eslint/eslint-plugin": "^4.16.1",
     "@typescript-eslint/parser": "^4.16.1",
     "eslint": "^7.21.0",
@@ -25,5 +27,10 @@
     "src/**/*.{ts,js}": [
       "eslint --fix"
     ]
+  },
+  "dependencies": {
+    "lodash.defaultsdeep": "^4.6.1",
+    "normalize.css": "^8.0.1",
+    "three": "^0.126.1"
   }
 }
