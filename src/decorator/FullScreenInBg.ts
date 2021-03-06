@@ -3,8 +3,15 @@
  * @param params
  * @returns
  */
-export default function FullScreenInBg (params:Record<string, any>) {
-  return function (Target:any) {
+import { addResizeListener } from '@/utils/resize-handler'
+import ResizeObserver from 'resize-observer-polyfill'
+
+interface ResizeDom extends HTMLElement{
+  __resizeListeners__?:[]
+  __ro__?:ResizeObserver
+}
+export default (params:Record<string, any>):Function => {
+  return (Target:any) => {
     return class FullScreenInBg extends Target {
       constructor (props:any) {
         super(props)
@@ -13,14 +20,31 @@ export default function FullScreenInBg (params:Record<string, any>) {
         this.dom.style.top = '0'
         this.dom.style.left = '0'
         this.dom.style.zIndex = '1'
+
+        // initDom
+        let wrapperDom:ResizeDom
         if (params.id) {
-          const wrapperDom = document.getElementById(params.id)
-          if (wrapperDom) {
-            wrapperDom.appendChild(this.dom)
+          const gDom = document.getElementById(params.id)
+          if (gDom) {
+            wrapperDom = gDom
+          } else {
+            wrapperDom = document.body
           }
         } else {
-          document.body.appendChild(this.dom)
+          wrapperDom = document.body
         }
+        if (wrapperDom) {
+          wrapperDom.appendChild(this.dom)
+        }
+        addResizeListener((wrapperDom as ResizeDom), (e:any) => {
+          this.width = wrapperDom.clientWidth
+          this.height = wrapperDom.clientHeight
+          super.resize(wrapperDom.clientWidth, wrapperDom.clientHeight)
+        })
+      }
+
+      resize () {
+        super.resize(window.innerWidth, window.innerHeight)
       }
     }
   }

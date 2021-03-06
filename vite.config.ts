@@ -1,8 +1,14 @@
-// import path from 'path'
-// import { defineConfig } from 'vite'
+import path from 'path'
+import { defineConfig } from 'vite'
 
-// const pathResolve = (pathStr: string) => {
-//   return path.resolve(__dirname, pathStr)
-// }
+const pathResolve = (pathStr: string) => {
+  return path.resolve(__dirname, pathStr)
+}
 
-// export default defineConfig({})
+export default defineConfig({
+  resolve: {
+    alias: [
+      { find: '@', replacement: pathResolve('./src') }
+    ]
+  }
+})
