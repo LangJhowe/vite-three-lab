@@ -26,8 +26,8 @@ class Engine {
   camera: PerspectiveCamera|OrthographicCamera
   renderer= new WebGLRenderer({ antialias: true, alpha: true })
   scene = new Scene()
-  constructor (param?:Record<string, any>) {
-    const opts = defsDeep(param, engineDefOpts)
+  constructor (params?:Record<string, any>) {
+    const opts = defsDeep(params, engineDefOpts)
     const ratio = opts.ratio
 
     this.ratio = ratio

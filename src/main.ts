@@ -1,11 +1,12 @@
 import 'normalize.css'
 import './style.styl'
 
+import * as THREE from 'three'
 import Engine from './model/Engine.class'
 import FullScreenInBg from './decorator/FullScreenInBg'
 import Helpers from './decorator/Helpers'
 import Controls from './decorator/Controls'
-import * as THREE from 'three'
+import PlaneText from './model/PlaneText.class'
 
 const helperOpts = {
   grid: {
@@ -23,7 +24,6 @@ const dom = document.querySelector('#app')
 if (dom) {
   dom.innerHTML = ''
   const engine = new CustomEngine({ cameraType: 'p' })
-  console.log('%c 🍊 engine: ', 'font-size:20px;background-color: #B03734;color:#fff;', engine)
   engine.start()
 
   const geometry = new THREE.PlaneGeometry(1, 1, 1)
@@ -37,4 +37,10 @@ if (dom) {
   const cube = new THREE.Mesh(geometry1, material1)
   cube.position.z = 3
   engine.add(cube)
+
+  const planText1 = new PlaneText('cyberpunk', { color: '#EEE600' })
+  planText1.position.y = 3
+  console.log(planText1.position)
+
+  engine.add(planText1)
 }

@@ -6,6 +6,7 @@ module.exports = {
   extends: [
     'standard'
   ],
+  globals: {},
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 12,
