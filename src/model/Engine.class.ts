@@ -1,5 +1,5 @@
 
-import { WebGLRenderer, Scene, PerspectiveCamera, Mesh, Color, OrthographicCamera } from 'three'
+import { WebGLRenderer, Scene, PerspectiveCamera, Color, OrthographicCamera, Object3D } from 'three'
 import defsDeep from 'lodash.defaultsdeep'
 
 interface EngineOpts {
@@ -83,7 +83,7 @@ class Engine {
     this.renderer.setSize(this.width, this.height)
   }
 
-  add (mesh:Mesh):void {
+  add (mesh:Object3D):void {
     this.scene.add(mesh)
   }
 }
