@@ -24,6 +24,7 @@ class Engine {
   dom: HTMLElement
   devicePixelRatio: number
   camera: PerspectiveCamera|OrthographicCamera
+  updateArr:Function[] = []
   renderer= new WebGLRenderer({ antialias: true, alpha: true })
   scene = new Scene()
   constructor (params?:Record<string, any>) {
@@ -56,6 +57,9 @@ class Engine {
   }
 
   update (): void {
+    this.updateArr.forEach((u:Function) => {
+      u()
+    })
     this.render()
     requestAnimationFrame(this.update)
   }
@@ -85,6 +89,10 @@ class Engine {
 
   add (mesh:Object3D):void {
     this.scene.add(mesh)
+  }
+
+  addUpdateArr (update:Function):void {
+    this.updateArr.push(update)
   }
 }
 

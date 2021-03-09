@@ -10,7 +10,9 @@ import PlaneText from './model/PlaneText.class'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
+import SimplexNoise from 'simplex-noise'
 
+const simplex = new SimplexNoise()
 const helperOpts = {
   grid: {
     size: 100,
@@ -150,4 +152,41 @@ if (dom) {
       console.log('An error happened')
     }
   )
+
+  // dynamic change mesh
+  const sphereGeometry = new THREE.SphereGeometry(1, 128, 128)
+  const material = new THREE.MeshNormalMaterial()
+  const sphere = new THREE.Mesh(sphereGeometry, material)
+  sphere.position.x = 3
+  sphere.position.y = 3
+  sphere.position.z = 3
+  engine.add(sphere)
+  const k = 3
+  console.log(sphere.geometry)
+  const position = sphere.geometry.attributes.position
+  engine.addUpdateArr(() => {
+    const n = new Float32Array(position.array.length)
+    const v = new THREE.Vector3()
+    for (let i = 0; i < position.count; i++) {
+      v.fromBufferAttribute(position, i).normalize()// .multiplyScalar(3)
+      // console.log(v)
+
+      // if (i == 1) {
+      //   console.log(v)
+      // }
+      v.x = v.x + 0.001
+      // v.y = v.y
+      // v.z = v.z
+      // const a = new Float32Array(3)
+      // a[0] = v.x
+      // a[1] = v.y
+      // a[2] = v.z
+      n[i] = v.x
+      n[i + 1] = v.y
+      n[i + 2] = v.z
+    }
+    sphere.geometry.setAttribute('position', new THREE.BufferAttribute(n, 3))
+    position.needsUpdate = true
+  })
+  console.log(window)
 }
