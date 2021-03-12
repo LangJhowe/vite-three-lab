@@ -8,8 +8,10 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "gsap": "^3.6.0",
     "lodash.defaultsdeep": "^4.6.1",
     "normalize.css": "^8.0.1",
+    "pnltri": "^2.1.1",
     "resize-observer-polyfill": "^1.5.1",
     "simplex-noise": "^2.4.0",
     "three": "^0.126.1"
