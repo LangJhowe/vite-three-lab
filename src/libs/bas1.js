@@ -75,7 +75,7 @@ BAS.ModelBufferGeometry = function (model) {
   this.faceCount = this.modelGeometry.faces.length;
   this.vertexCount = this.modelGeometry.vertices.length;
 
-  this.bufferIndices();
+  // this.bufferIndices();
   this.bufferPositions();
 };
 BAS.ModelBufferGeometry.prototype = Object.create(THREE.BufferGeometry.prototype);
@@ -93,6 +93,7 @@ BAS.ModelBufferGeometry.prototype.bufferIndices = function () {
     indexBuffer[offset + 1] = face.b;
     indexBuffer[offset + 2] = face.c;
   }
+  console.log(indexBuffer);
 };
 
 BAS.ModelBufferGeometry.prototype.bufferPositions = function() {
@@ -330,7 +331,6 @@ BAS.PrefabBufferGeometry.prototype.setAttribute2 = function (name, data) {
 
 BAS.BaseAnimationMaterial = function (parameters) {
   THREE.ShaderMaterial.call(this);
-
   this.shaderFunctions = [];
   this.shaderParameters = [];
   this.shaderVertexInit = [];
@@ -384,7 +384,7 @@ BAS.BaseAnimationMaterial.prototype.setUniformValues = function (values) {
         case 'f': // float
         case 't': // texture
         default:
-          // uniform.value = value;
+          uniform.value = value;
       }
     }
   }
@@ -392,7 +392,6 @@ BAS.BaseAnimationMaterial.prototype.setUniformValues = function (values) {
 
 BAS.BasicAnimationMaterial = function(parameters, uniformValues) {
  BAS.BaseAnimationMaterial.call(this, parameters);
-
   var basicShader = THREE.ShaderLib['basic'];
 
   this.uniforms = THREE.UniformsUtils.merge([basicShader.uniforms, this.uniforms]);

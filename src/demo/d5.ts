@@ -57,6 +57,8 @@ class TextAnimation extends THREE.Mesh {
   animationDuration:number
   constructor (geo:MGeometry) {
     const bufferGeometry = new BAS.ModelBufferGeometry(geo)
+    console.log(bufferGeometry)
+
     const aAnimation = bufferGeometry.createAttribute('aAnimation', 2)
     const aCentroid = bufferGeometry.createAttribute('aCentroid', 3)
     const aControl0 = bufferGeometry.createAttribute('aControl0', 3)
@@ -68,15 +70,15 @@ class TextAnimation extends THREE.Mesh {
 
     const size = geo.userData.size
 
-    const maxDelayX = 2.0
-    const maxDelayY = 0.25
+    const maxDelayX = 2.0 / 10
+    const maxDelayY = 0.25 / 10
     const minDuration = 2
     const maxDuration = 8
     const stretch = 0.25
 
     for (i = 0, i2 = 0, i3 = 0, i4 = 0; i < faceCount; i++, i2 += 6, i3 += 9, i4 += 12) {
       const face = geo.faces[i]
-      const centroid = BAS.Utils.computeCentroid(geo, face)
+      const centroid = BAS.Utils.computeCentroid(geo, face) // 通过geomerty的定点和面计算质心
 
       // animation
       const delayX = Math.max(0, (centroid.x / size.width) * maxDelayX)
@@ -105,21 +107,21 @@ class TextAnimation extends THREE.Mesh {
       const c1z = THREE.MathUtils.randFloatSpread(120)
 
       for (v = 0; v < 9; v += 3) {
-        aControl0.array[i3 + v] = c0x
-        aControl0.array[i3 + v + 1] = c0y
-        aControl0.array[i3 + v + 2] = c0z
+        aControl0.array[i3 + v] = c0x * 0.1
+        aControl0.array[i3 + v + 1] = c0y * 0.1
+        aControl0.array[i3 + v + 2] = c0z * 0.1
 
-        aControl1.array[i3 + v] = c1x
-        aControl1.array[i3 + v + 1] = c1y
-        aControl1.array[i3 + v + 2] = c1z
+        aControl1.array[i3 + v] = c1x * 0.1
+        aControl1.array[i3 + v + 1] = c1y * 0.1
+        aControl1.array[i3 + v + 2] = c1z * 0.1
       }
 
       // end position
       var x, y, z
 
-      x = 1000// centroid.x + THREE.MathUtils.randFloatSpread(12)
-      y = 0// centroid.y + size.height * THREE.MathUtils.randFloat(0.0, 12.0)
-      z = 0// THREE.MathUtils.randFloat(-2, 2)
+      x = centroid.x + THREE.MathUtils.randFloatSpread(3)
+      y = centroid.y + size.height * THREE.MathUtils.randFloat(0.0, 3.0)
+      z = 0// THREE.MathUtils.randFloat(0, 0)
 
       for (v = 0; v < 9; v += 3) {
         aEndPosition.array[i3 + v] = x
@@ -127,7 +129,7 @@ class TextAnimation extends THREE.Mesh {
         aEndPosition.array[i3 + v + 2] = z
       }
     }
-
+    console.log('%c 🥚 bufferGeometry: ', 'font-size:20px;background-color: #93C0A4;color:#fff;', bufferGeometry)
     const material = new BAS.BasicAnimationMaterial({
       // flatShading: THREE.FlatShading,
       side: THREE.DoubleSide,
@@ -154,7 +156,7 @@ class TextAnimation extends THREE.Mesh {
       shaderVertexInit: [
         'float tDelay = aAnimation.x;',
         'float tDuration = aAnimation.y;',
-        'float tTime = clamp(uTime - tDelay, 0.0, tDuration);',
+        'float tTime = clamp(uTime - tDelay , 0.0, tDuration);',
         'float tProgress =  ease(tTime, 0.0, 1.0, tDuration);'
         // 'float tProgress = tTime / tDuration;'
       ],
@@ -171,10 +173,8 @@ class TextAnimation extends THREE.Mesh {
         // 'tPosition += mix(transformed, aEndPosition, tProgress);',
         // 'transformed = tPosition;'
       ]
-    }, { })
+    }, { diffuseColor: 0x00ff00 })
 
-    material.fragmentShader = material.fragmentShader.replace('gl_FragColor = vec4(1)', 'gl_FragColor = vec4(1.0,0.0,1.0,1.0)')
-    material.needsUpdate = true
     super(bufferGeometry, material)
     this.animationDuration = maxDelayX + maxDelayY + maxDuration - 3
     this._animationProgress = 1
@@ -197,8 +197,9 @@ export default (engine:any) => {
   // bas 处理
   utilGeo.userData = geometry.userData
   utilGeo.fromBufferGeometry(geometry)
+  console.log('utilGeo', utilGeo)
 
-  BAS.Utils.separateFaces(utilGeo)
+  // BAS.Utils.separateFaces(utilGeo)
   // geometry = utilGeo.toBufferGeometry() as THREE.TextGeometry
 
   const m = new TextAnimation(utilGeo)

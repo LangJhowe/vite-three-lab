@@ -1,5 +1,5 @@
 
-import { Power1, Power3, TimelineMax, Back } from 'gsap/gsap-core'
+import { Power3, TimelineMax, Back } from 'gsap/gsap-core'
 import * as THREE from 'three'
 
 export default (engine:any) => {

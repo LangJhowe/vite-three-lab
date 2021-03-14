@@ -1,13 +1,13 @@
 import 'normalize.css'
 import './style.styl'
 
-import * as THREE from 'three'
 import Engine from './model/Engine.class'
 import FullScreenInBg from './decorator/FullScreenInBg'
 import Helpers from './decorator/Helpers'
 import Controls from './decorator/Controls'
 import './libs/bas1.js'
-import d5 from './demo/d5'
+import d7 from './demo/d7/d7'
+// import d5 from './demo/d5'
 
 const helperOpts = {
   grid: {
@@ -29,6 +29,7 @@ if (dom) {
   engine.start()
   console.log(engine)
 
-  d5(engine)
+  // d5(engine)
+  d7(engine)
   // d6(engine)
 }
