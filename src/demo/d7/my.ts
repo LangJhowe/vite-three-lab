@@ -58,12 +58,17 @@ class MyMaterial extends THREE.ShaderMaterial {
     this.shaderTransformNormal = params.shaderTransformNormal
     this.shaderTransformPosition = params.shaderTransformPosition
 
-    const basicShader = THREE.ShaderLib.basic
+    // const basicShader = THREE.ShaderLib.basic
     this.vertexShader = this._concatVertexShader()
-    this.fragmentShader = basicShader.fragmentShader
+    const color = new THREE.Color(params.color)
+    this.fragmentShader = `
+      void main() {
+        gl_FragColor = vec4(${color.r},${color.g},${color.b},1.0);
+      }
+    `
+    // basicShader.fragmentShader
     this.setValues({ uniforms: params.uniforms })
     this.uniformsNeedUpdate = true
-    // console.log(this.vertexShader)
   }
 
   _concatFunctions () {

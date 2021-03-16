@@ -149,6 +149,7 @@ export default (engine:any) => {
 
   const material = new MyMaterial({
     uniforms: { uTime: { value: 0 } },
+    color: '#E7F20D',
     shaderFunctions: [
       ShaderChunk.cubic_bezier,
       ShaderChunk.ease_out_cubic
