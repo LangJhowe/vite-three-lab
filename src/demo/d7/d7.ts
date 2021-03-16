@@ -19,6 +19,10 @@ const ShaderChunk = {
   ease_out_cubic: 'float ease(float t, float b, float c, float d) {\n  return c*((t=t/d - 1.0)*t*t + 1.0) + b;\n}\n'
 }
 export default (engine:any) => {
+  engine.camera.far = 20
+  engine.camera.position.x = 0// = 10
+  engine.camera.position.y = 6// = 10
+  engine.camera.position.z = 15
   const fontLader = new THREE.FontLoader()
   const params = {
     size: 1,
@@ -31,7 +35,7 @@ export default (engine:any) => {
     // bevelEnabled: true,
     anchor: {
       x: 0.5,
-      y: 0.0,
+      y: -0.5,
       z: 0.5
     }
   }
@@ -57,11 +61,11 @@ export default (engine:any) => {
 
   const size = geometry.userData.size
 
-  const maxDelayX = 2 // 控制横向变化延迟
-  const maxDelayY = 0.25// 控制纵向变化延迟
-  const minDuration = 2
-  const maxDuration = 4
-  const stretch = 0.25
+  const maxDelayX = 0.2// 控制横向变化延迟
+  const maxDelayY = 0.1// 控制纵向变化延迟
+  const minDuration = 0.3
+  const maxDuration = 0.5
+  const stretch = 0.1 // 变形拉伸
   // 线条
   geometry.createAttribute('aOffset', 3)
   geometry.createAttribute('aAnimation', 2)
@@ -87,7 +91,7 @@ export default (engine:any) => {
     }
 
     // animation
-    const delayX = Math.max(0, (centroid.x / size.width) * maxDelayX / 10)
+    const delayX = Math.max(0, (centroid.x / size.width) * maxDelayX)
     const delayY = Math.max(0, (1.0 - (centroid.y / size.height)) * maxDelayY)
     const duration = THREE.MathUtils.randFloat(minDuration, maxDuration)
 
@@ -104,13 +108,13 @@ export default (engine:any) => {
     }
 
     // ctrl
-    const c0x = centroid.x + THREE.MathUtils.randFloat(40, 120)
-    const c0y = centroid.y + size.height * THREE.MathUtils.randFloat(0.0, 12.0)
-    const c0z = THREE.MathUtils.randFloatSpread(120) * 10
+    const c0x = centroid.x + size.width / 2 + THREE.MathUtils.randFloat(1, 2)
+    const c0y = centroid.y + size.height * THREE.MathUtils.randFloat(2.0, 3.0)
+    const c0z = THREE.MathUtils.randFloatSpread(10)
 
-    const c1x = centroid.x + THREE.MathUtils.randFloat(80, 120) * -1
-    const c1y = centroid.y + size.height * THREE.MathUtils.randFloat(0.0, 12.0)
-    const c1z = THREE.MathUtils.randFloatSpread(120) * 10
+    const c1x = centroid.x + size.width / 2 + THREE.MathUtils.randFloat(1, 6) * -1
+    const c1y = centroid.y + size.height * THREE.MathUtils.randFloat(3.0, 6.0)
+    const c1z = THREE.MathUtils.randFloatSpread(10)
 
     for (let v = 0; v < 9; v += 3) {
       aControl0[ci + v] = c0x
@@ -125,23 +129,23 @@ export default (engine:any) => {
     // end position
     var x, y, z
 
-    x = centroid.x + THREE.MathUtils.randFloatSpread(3)
-    y = centroid.y + size.height * THREE.MathUtils.randFloat(0.0, 3.0)
-    z = 0// THREE.MathUtils.randFloat(0, 0)
+    x = centroid.x + THREE.MathUtils.randFloatSpread(3) - size.width / 2
+    y = centroid.y + size.height * THREE.MathUtils.randFloat(0, 6)
+    z = -10// THREE.MathUtils.randFloat(-10, 10)
 
     for (let v = 0; v < 9; v += 3) {
-      aEndPosition[ci + v] = x - 10
-      aEndPosition[ci + v + 1] = y + 10
-      aEndPosition[ci + v + 2] = z - 2
+      aEndPosition[ci + v] = x
+      aEndPosition[ci + v + 1] = y
+      aEndPosition[ci + v + 2] = z
     }
   }
+
   geometry.setAttribute('aOffset', new THREE.BufferAttribute(aOffset, 3))
   geometry.setAttribute('aCentroid', new THREE.BufferAttribute(aCentroid, 3))
-  geometry.setAttribute('aControl0', new THREE.BufferAttribute(aCentroid, 3))
-  geometry.setAttribute('aControl1', new THREE.BufferAttribute(aCentroid, 3))
+  geometry.setAttribute('aControl0', new THREE.BufferAttribute(aControl0, 3))
+  geometry.setAttribute('aControl1', new THREE.BufferAttribute(aControl1, 3))
   geometry.setAttribute('aAnimation', new THREE.BufferAttribute(aAnimation, 2))
   geometry.setAttribute('aEndPosition', new THREE.BufferAttribute(aEndPosition, 3))
-  console.log('%c 🥕 geometry: ', 'font-size:20px;background-color: #33A5FF;color:#fff;', geometry)
 
   const material = new MyMaterial({
     uniforms: { uTime: { value: 0 } },
@@ -163,7 +167,7 @@ export default (engine:any) => {
       'vec3 endPosition = vec3(-3.0,3.0,-3.0);',
       'float tDelay = aAnimation.x;',
       'float tDuration = aAnimation.y;',
-      'float tTime = clamp(uTime*uTime-tDelay, 0.0, tDuration);',
+      'float tTime = clamp(uTime-tDelay, 0.0, tDuration);',
 
       'float tProgress =  ease(tTime, 0.0, 1.0, tDuration);'
 
@@ -187,7 +191,7 @@ export default (engine:any) => {
 
       // 三角形质点 + 延迟
       'vec3 tPosition = transformed - aCentroid;',
-      'tPosition *= (1.0 - tProgress);',
+      'tPosition *= (1.0 - tTime);',
       'tPosition += aCentroid;',
       'tPosition += cubicBezier(tPosition, aControl0, aControl1, aEndPosition, tProgress);',
       'transformed = tPosition;'
@@ -195,7 +199,6 @@ export default (engine:any) => {
 
   })
   const m = new THREE.Mesh(geometry, material)
-  console.log('%c 🍋 m: ', 'font-size:20px;background-color: #EA7E5C;color:#fff;', m.material.vertexShader)
   engine.add(m)
 
   const tl = new TimelineMax({
