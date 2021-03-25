@@ -6,7 +6,8 @@ import FullScreenInBg from './decorator/FullScreenInBg'
 import Helpers from './decorator/Helpers'
 import Controls from './decorator/Controls'
 import './libs/bas1.js'
-import d7 from './demo/d7/d7'
+// import d7 from './demo/d7/d7'
+import d8 from './demo/d8'
 // import d5 from './demo/d5'
 
 const helperOpts = {
@@ -30,6 +31,7 @@ if (dom) {
   console.log(engine)
 
   // d5(engine)
-  d7(engine)
+  // d7(engine)
+  d8(engine)
   // d6(engine)
 }

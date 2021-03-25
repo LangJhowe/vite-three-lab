@@ -19,7 +19,7 @@ const ShaderChunk = {
   ease_out_cubic: 'float ease(float t, float b, float c, float d) {\n  return c*((t=t/d - 1.0)*t*t + 1.0) + b;\n}\n'
 }
 export default (engine:any) => {
-  engine.camera.far = 20
+  // engine.camera.far = 20
   engine.camera.position.x = 0// = 10
   engine.camera.position.y = 6// = 10
   engine.camera.position.z = 15
